@@ -7,8 +7,36 @@ function OrderModal({ order, setOrderModal }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [nameIsValid, setNameIsValid] = useState(true);
+  const [phoneIsValid, setPhoneIsValid] = useState(true);
+  const [addressIsValid, setAddressIsValid] = useState(true);
+
+  const validateForm = function () {
+    const phoneCheck = /^[ ()-]*([0-9][ ()-]*){10}$/;
+    let phoneValid = false;
+
+    if (phone.match(phoneCheck)) {
+      const digits = phone.replace(/\D/g, "");
+      const formattedPhone = `(${digits.slice(0, 3)}) ${digits.slice(
+        3,
+        6
+      )}-${digits.slice(6)}`;
+      setPhone(formattedPhone);
+      phoneValid = true;
+    }
+
+    setNameIsValid(!!name);
+    setPhoneIsValid(phoneValid);
+    setAddressIsValid(!!address);
+
+    return !!name && phoneValid && !!address;
+  };
 
   const placeOrder = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     const response = await fetch("/api/orders", {
       method: "POST",
       headers: {
@@ -27,6 +55,7 @@ function OrderModal({ order, setOrderModal }) {
       navigate(`/order-confirmation/${data.id}`);
     }
   };
+
   return (
     <>
       <div
@@ -84,6 +113,12 @@ function OrderModal({ order, setOrderModal }) {
             </label>
           </div>
         </form>
+
+        <div className={styles.errorMessageBox}>
+          {!nameIsValid && <p>Please enter a name</p>}
+          {!phoneIsValid && <p>Please enter a valid phone number</p>}
+          {!addressIsValid && <p>Please enter an address</p>}
+        </div>
 
         <div className={styles.orderModalButtons}>
           <button

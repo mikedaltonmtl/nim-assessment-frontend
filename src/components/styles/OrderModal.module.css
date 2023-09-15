@@ -63,3 +63,18 @@
   background-color: var(--secondary-accent);
   color: var(--secondary-color);
 }
+
+.errorMessageBox {
+  width: 100%;
+  min-height: 5rem;
+  padding-left: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: flex-start;
+}
+
+.errorMessageBox p {
+  font-weight: 200;
+  padding-bottom: 0.2rem;
+}
